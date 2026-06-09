@@ -35,8 +35,7 @@ ai-job-assistant/
 1. 将原始 JD 数据放入 `data/raw/`
 2. 运行数据预处理脚本：`python scripts/data_processing/preprocess.py`
 3. 将生成的 Knowledge Base 文件导入 Dify 知识库
-4. 将 `prompts/` 中的模板配置
-到对应的 Dify 应用中
+4. 将 `prompts/` 中的模板配置到对应的 Dify 应用中
 
 ## 环境要求
 
