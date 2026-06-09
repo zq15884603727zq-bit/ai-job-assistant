@@ -1,0 +1,257 @@
+app:
+  description: 基于Dify平台的AI求职助手，提供岗位JD分析、简历匹配、面试问题生成等功能
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  icon_type: emoji
+  mode: advanced-chat
+  name: AI求职助手
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/deepseek:0.0.17@f7a5c1d222d17ee419b17a80d6e4923838fe93788dc724a3af73fbc6990b3a32
+    version: null
+kind: app
+version: 0.6.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 50
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        sourceType: llm
+        targetType: answer
+      id: llm-answer
+      selected: false
+      source: llm
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+    - data:
+        isInLoop: false
+        sourceType: start
+        targetType: knowledge-retrieval
+      id: 1781010437698-source-1781017525418-target
+      selected: false
+      source: '1781010437698'
+      sourceHandle: source
+      target: '1781017525418'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: 1781017525418-source-llm-target
+      selected: false
+      source: '1781017525418'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: 用户输入
+        type: start
+        variables: []
+      height: 72
+      id: '1781010437698'
+      position:
+        x: 84
+        y: 288
+      positionAbsolute:
+        x: 84
+        y: 288
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1781017525418'
+          - result
+        memory:
+          query_prompt_template: "用户查询：{{#sys.query#}}\n\n从知识库检索到的相关岗位信息：\n{{{#1781017525418.result#}}\n\
+            \n请根据用户查询和检索到的岗位信息，完成以下任务：\n\n1. **分析用户意图**：用户想找什么类型的岗位？（实习/全职、方向、公司类型等）\n\
+            \n2. **推荐岗位**：从检索结果中推荐最匹配的1-3个岗位，每个包含：\n   - 岗位名称\n   - 公司\n   - 匹配理由（为什么适合用户）\n\
+            \n3. **能力差距分析**：如果用户提供了简历，分析：\n   - 已满足的要求\n   - 还欠缺的能力\n   - 提升建议\n\n\
+            4. **面试准备**：基于推荐岗位，生成5个高频面试问题及答题思路\n\n请以友好、专业的语气输出，结构清晰。"
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: deepseek-v4-flash
+          provider: langgenius/deepseek/deepseek
+        prompt_template:
+        - id: c41d422c-6644-46cf-8ef1-adba660c544b
+          role: system
+          text: '# JD 解析器 - System Prompt
+
+
+
+            ## 角色
+
+            你是一位资深的招聘顾问与技术分析师，擅长从职位描述（Job Description）中提取结构化信息。
+
+
+
+            ## 任务
+
+            解析用户提供的职位描述文本，提取以下结构化信息：
+
+
+
+            - **职位名称**：标准化的岗位名称
+
+            - **公司信息**：公司名称、行业、规模（如有）
+
+            - **工作地点**：城市、是否支持远程
+
+            - **薪资范围**：月薪/年薪、是否有期权/股票
+
+            - **技术栈**：列出的编程语言、框架、工具
+
+            - **硬性要求**：学历、工作年限、特定技能
+
+            - **加分项**：Nice-to-have 技能或经验
+
+            - **岗位职责**：核心工作内容（列表形式）
+
+            - **福利待遇**：五险一金、假期、培训等
+
+
+
+            ## 输出格式
+
+            以 JSON 格式输出，字段名使用英文 camelCase。'
+        selected: true
+        title: LLM
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: llm
+      position:
+        x: 646
+        y: 285
+      positionAbsolute:
+        x: 646
+        y: 285
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        answer: '{{#llm.text#}}'
+        selected: false
+        title: 直接回复
+        type: answer
+        variables: []
+      height: 102
+      id: answer
+      position:
+        x: 1002
+        y: 261
+      positionAbsolute:
+        x: 1002
+        y: 261
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        dataset_ids:
+        - Tvxpc5eZMNcYheGICfvOsvmkOKZMHg7FWUCyFYeCRPZiWxwZxRgThJjyrjK1rQvr
+        multiple_retrieval_config:
+          reranking_enable: false
+          reranking_mode: reranking_model
+          top_k: 4
+        query_attachment_selector: []
+        query_variable_selector:
+        - '1781010437698'
+        - sys.query
+        retrieval_mode: multiple
+        selected: false
+        title: 知识检索
+        type: knowledge-retrieval
+      height: 89
+      id: '1781017525418'
+      position:
+        x: 347
+        y: 298
+      positionAbsolute:
+        x: 347
+        y: 298
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    viewport:
+      x: 6.917331883549878
+      y: 60.62398931933103
+      zoom: 0.8705505632961243
+  rag_pipeline_variables: []
